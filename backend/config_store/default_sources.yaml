@@ -1,0 +1,141 @@
+---
+# Frontier AI Radar — Default Source Configuration
+# Agents will use these as starting sources.
+# Add/edit sources via the web UI (changes saved to the database).
+
+competitors:
+  - name: "OpenAI Blog"
+    agent_type: competitor
+    rss_feeds:
+      - "https://openai.com/blog/rss.xml"
+    urls:
+      - "https://openai.com/blog"
+      - "https://platform.openai.com/docs/changelog"
+    keywords: ["release", "launch", "gpt", "api", "pricing", "update", "new"]
+    rate_limit: 0.5
+
+  - name: "Google DeepMind"
+    agent_type: competitor
+    rss_feeds:
+      - "https://deepmind.google/blog/rss.xml"
+    urls:
+      - "https://deepmind.google/blog/"
+    keywords: ["gemini", "release", "model", "research"]
+    rate_limit: 0.5
+
+  - name: "Meta AI"
+    agent_type: competitor
+    rss_feeds: []
+    urls:
+      - "https://ai.meta.com/blog/"
+      - "https://engineering.fb.com/category/ml-applications/"
+    keywords: ["llama", "release", "model", "open source"]
+    rate_limit: 0.5
+
+  - name: "Mistral AI"
+    agent_type: competitor
+    rss_feeds: []
+    urls:
+      - "https://mistral.ai/news/"
+    keywords: ["mistral", "release", "model", "api"]
+    rate_limit: 0.5
+
+  - name: "Cohere"
+    agent_type: competitor
+    rss_feeds: []
+    urls:
+      - "https://cohere.com/blog"
+    keywords: ["command", "release", "api", "embed"]
+    rate_limit: 0.5
+
+  - name: "xAI / Grok"
+    agent_type: competitor
+    rss_feeds: []
+    urls:
+      - "https://x.ai/blog"
+    keywords: ["grok", "release", "model"]
+    rate_limit: 0.5
+
+model_providers:
+  - name: "Anthropic"
+    agent_type: model_provider
+    rss_feeds:
+      - "https://www.anthropic.com/news/rss"
+    urls:
+      - "https://www.anthropic.com/news"
+      - "https://docs.anthropic.com/en/release-notes/api"
+    keywords: ["claude", "release", "model", "pricing", "api", "alignment", "safety"]
+    rate_limit: 0.5
+
+  - name: "OpenAI API"
+    agent_type: model_provider
+    rss_feeds: []
+    urls:
+      - "https://platform.openai.com/docs/changelog"
+      - "https://openai.com/pricing"
+    keywords: ["api", "model", "gpt", "pricing", "deprecat", "release"]
+    rate_limit: 0.5
+
+  - name: "Google AI (Gemini)"
+    agent_type: model_provider
+    rss_feeds: []
+    urls:
+      - "https://ai.google.dev/gemini-api/docs/changelog"
+      - "https://cloud.google.com/vertex-ai/docs/release-notes"
+    keywords: ["gemini", "api", "pricing", "release", "context"]
+    rate_limit: 0.5
+
+  - name: "AWS Bedrock"
+    agent_type: model_provider
+    rss_feeds: []
+    urls:
+      - "https://aws.amazon.com/bedrock/whats-new/"
+    keywords: ["bedrock", "release", "model", "pricing"]
+    rate_limit: 0.5
+
+research:
+  - name: "arXiv CS.CL + CS.LG"
+    agent_type: research
+    type: arxiv
+    arxiv_queries:
+      - "cat:cs.CL AND (LLM OR language model OR benchmark OR evaluation OR alignment)"
+      - "cat:cs.LG AND (foundation model OR multimodal OR agent OR RLHF)"
+    max_results: 25
+    rate_limit: 0.3
+
+  - name: "Anthropic Research Blog"
+    agent_type: research
+    type: url
+    urls:
+      - "https://www.anthropic.com/research"
+    keywords: ["alignment", "safety", "eval", "benchmark"]
+    rate_limit: 0.5
+
+  - name: "Google AI Research"
+    agent_type: research
+    type: url
+    urls:
+      - "https://research.google/blog/"
+    keywords: ["LLM", "model", "benchmark", "multimodal"]
+    rate_limit: 0.5
+
+  - name: "Meta AI Research"
+    agent_type: research
+    type: url
+    urls:
+      - "https://ai.meta.com/research/"
+    keywords: ["LLaMA", "evaluation", "benchmark"]
+    rate_limit: 0.5
+
+hf_benchmarks:
+  - name: "HuggingFace Leaderboards"
+    agent_type: hf_benchmark
+    urls:
+      - "https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard"
+      - "https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard"
+    rate_limit: 0.3
+
+  - name: "HuggingFace Trending Models"
+    agent_type: hf_benchmark
+    type: hf_api
+    rate_limit: 0.5

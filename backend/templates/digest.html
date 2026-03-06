@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page {
+      size: A4;
+      margin: 2cm 2cm 2.5cm 2cm;
+      @bottom-center {
+        content: "Frontier AI Radar — " string(date) " — Page " counter(page) " of " counter(pages);
+        font-size: 9pt;
+        color: #666;
+      }
+    }
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 10.5pt;
+      color: #1a1a1a;
+      line-height: 1.55;
+    }
+    h1 { font-size: 26pt; color: #1e3a5f; margin: 0; }
+    h2 { font-size: 15pt; color: #1e3a5f; border-bottom: 2px solid #1e3a5f; padding-bottom: 4pt; margin-top: 24pt; }
+    h3 { font-size: 11.5pt; color: #0f5132; margin-top: 16pt; margin-bottom: 4pt; }
+    .cover { text-align: center; padding: 60pt 0 40pt; }
+    .cover .subtitle { font-size: 14pt; color: #555; margin-top: 8pt; }
+    .cover .date { font-size: 12pt; color: #888; margin-top: 4pt; string-set: date content(); }
+    .badge {
+      display: inline-block;
+      background: #1e3a5f;
+      color: white;
+      padding: 2pt 7pt;
+      border-radius: 10pt;
+      font-size: 8.5pt;
+      font-weight: bold;
+      margin-right: 4pt;
+    }
+    .badge.models { background: #1e3a5f; }
+    .badge.apis { background: #0f5132; }
+    .badge.pricing { background: #7c3aed; }
+    .badge.benchmarks { background: #b45309; }
+    .badge.safety { background: #991b1b; }
+    .badge.research { background: #0369a1; }
+    .badge.tooling { background: #374151; }
+    .finding-card {
+      border: 1pt solid #e2e8f0;
+      border-radius: 5pt;
+      padding: 10pt 12pt;
+      margin-bottom: 12pt;
+      page-break-inside: avoid;
+    }
+    .finding-title { font-size: 11.5pt; font-weight: bold; margin-bottom: 4pt; }
+    .finding-meta { font-size: 8.5pt; color: #666; margin-bottom: 6pt; }
+    .finding-summary { margin-bottom: 6pt; }
+    .finding-why { background: #f0fdf4; border-left: 3pt solid #0f5132; padding: 5pt 8pt; font-size: 9.5pt; }
+    .confidence-bar {
+      display: inline-block;
+      height: 6pt;
+      background: #22c55e;
+      border-radius: 3pt;
+      vertical-align: middle;
+    }
+    .exec-summary { background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 5pt; padding: 14pt; margin-bottom: 20pt; }
+    .page-break { page-break-after: always; }
+    table { width: 100%; border-collapse: collapse; margin: 8pt 0; }
+    th { background: #1e3a5f; color: white; padding: 5pt 8pt; font-size: 9pt; text-align: left; }
+    td { padding: 4pt 8pt; font-size: 9pt; border-bottom: 0.5pt solid #e2e8f0; }
+    tr:nth-child(even) td { background: #f8fafc; }
+    a { color: #1e3a5f; }
+    .section-intro { color: #555; font-style: italic; margin-bottom: 12pt; }
+  </style>
+</head>
+<body>
+
+<!-- Cover Page -->
+<div class="cover page-break">
+  <div style="margin: 0 auto; max-width: 400pt;">
+    <div style="background: linear-gradient(135deg, #1e3a5f, #0f5132); padding: 30pt; border-radius: 8pt; color: white; margin-bottom: 20pt;">
+      <h1 style="color: white; text-align: center;">Frontier AI Radar</h1>
+    </div>
+    <p class="subtitle">Daily Intelligence Digest</p>
+    <p class="date">{{ date }}</p>
+    <p style="color: #888; font-size: 10pt; margin-top: 20pt;">
+      Tracking competitor releases · Foundation model updates · Research publications · HF benchmarks
+    </p>
+    <div style="margin-top: 30pt; padding: 10pt; background: #f8fafc; border-radius: 5pt; font-size: 9.5pt; color: #555;">
+      <strong>{{ total_findings }} findings</strong> across {{ agent_count }} intelligence sources
+    </div>
+  </div>
+</div>
+
+<!-- Executive Summary -->
+<h2>Executive Summary</h2>
+<div class="exec-summary">
+  {{ exec_summary | replace('\n- ', '<br>• ') | replace('\n', '<br>') | safe }}
+</div>
+
+<h3>What Changed Since Yesterday</h3>
+<p>{{ what_changed | replace('\n', '<br>') | safe }}</p>
+
+<h3>Why It Matters</h3>
+<p>{{ why_it_matters | replace('\n', '<br>') | safe }}</p>
+
+<div class="page-break"></div>
+
+<!-- Sections by category -->
+{% for section_name, section_findings in sections.items() %}
+{% if section_findings %}
+<h2>{{ section_name }}</h2>
+<p class="section-intro">{{ section_findings | length }} update(s) detected</p>
+
+{% for finding in section_findings %}
+<div class="finding-card">
+  <div class="finding-title">
+    <span class="badge {{ finding.category | lower | default('other') }}">{{ finding.category }}</span>
+    {{ finding.title }}
+  </div>
+  <div class="finding-meta">
+    {% if finding.publisher %}<strong>{{ finding.publisher }}</strong> · {% endif %}
+    {{ finding.date_detected }} ·
+    Confidence: <span class="confidence-bar" style="width: {{ (finding.confidence * 40) | int }}pt;"></span>
+    {{ (finding.confidence * 100) | int }}%
+    {% if finding.tags %}· {{ finding.tags | join(", ") }}{% endif %}
+  </div>
+  <div class="finding-summary">
+    <strong>Summary:</strong> {{ finding.summary_short }}
+  </div>
+  {% if finding.summary_long %}
+  <div style="font-size: 9.5pt; color: #333; margin-bottom: 6pt;">
+    {{ finding.summary_long | replace('\n- ', '<br>• ') | replace('\n', '<br>') | safe }}
+  </div>
+  {% endif %}
+  {% if finding.why_it_matters %}
+  <div class="finding-why">
+    <strong>Why it matters:</strong> {{ finding.why_it_matters }}
+  </div>
+  {% endif %}
+  {% if finding.source_url %}
+  <div style="margin-top: 5pt; font-size: 8.5pt; color: #888;">
+    Source: <a href="{{ finding.source_url }}">{{ finding.source_url[:80] }}</a>
+  </div>
+  {% endif %}
+</div>
+{% endfor %}
+<div class="page-break"></div>
+{% endif %}
+{% endfor %}
+
+<!-- Appendix -->
+<h2>Appendix — All Source URLs</h2>
+<table>
+  <tr><th>Title</th><th>Category</th><th>Publisher</th><th>URL</th></tr>
+  {% for f in all_findings %}
+  <tr>
+    <td>{{ f.title[:50] }}</td>
+    <td>{{ f.category }}</td>
+    <td>{{ f.publisher or "-" }}</td>
+    <td style="font-size: 8pt;"><a href="{{ f.source_url }}">{{ f.source_url[:60] }}</a></td>
+  </tr>
+  {% endfor %}
+</table>
+
+<div style="margin-top: 20pt; font-size: 8.5pt; color: #999; text-align: center;">
+  Generated by Frontier AI Radar on {{ date }} · Powered by Claude (Anthropic)
+</div>
+
+</body>
+</html>
